@@ -7,7 +7,7 @@ Models Included:
 * `XGBoost`
 * `Random Forest`
 
-Terminology
+Terminology:
 * `Oversampled` - some records of the minority class are duplicated at random to mitigate class imbalance problem
 * `Undersampled` - some records of the majority class are excluded at random to mitigate class imbalance problem
 * `Imputed` - missing values are imputed in the data
