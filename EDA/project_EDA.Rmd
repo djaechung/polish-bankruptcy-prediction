@@ -1,0 +1,299 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+
+```{r}
+library(caret)
+library(tidyverse)
+library(ggplot2)
+thirdyear_default <- read.csv("~/Downloads/csv_result-3year.csv")
+thirdyear_default <- thirdyear_default[ -1 ]
+thirdyear_default <- thirdyear_default %>% mutate_if(is.character, as.numeric)
+
+```
+
+```{r}
+summary(thirdyear_default)
+```
+
+
+```{r}
+### Due to syntax reasons, the division sign is indicated by ___ (3 dashes)
+thirdyear_default = rename(thirdyear_default, profit___total_assets = Attr1)
+thirdyear_default = rename(thirdyear_default, total_liabilities___total_assets  = Attr2)
+thirdyear_default = rename(thirdyear_default, working_capital___total_assets  = Attr3)
+thirdyear_default = rename(thirdyear_default, current_assets___shortterm_liabilities  = Attr4)
+thirdyear_default = rename(thirdyear_default, liquidity = Attr5) #####
+thirdyear_default = rename(thirdyear_default, retained_earnings___totalassets  = Attr6)
+thirdyear_default = rename(thirdyear_default, EBIT___totalassets  = Attr7)
+thirdyear_default = thirdyear_default = rename(thirdyear_default, bookvalueofequity___total_liabilities  = Attr8)
+thirdyear_default = rename(thirdyear_default, sales___total_assets  = Attr9)
+thirdyear_default = rename(thirdyear_default, equity___total_assets = Attr10)
+thirdyear_default = rename(thirdyear_default, gp_extraordinaryitems_financialexpenses___totalassets   = Attr11)
+thirdyear_default = rename(thirdyear_default, gross_profit___short_term_liabilities  = Attr12)
+thirdyear_default = rename(thirdyear_default, gross_profit_depreciation___sales  = Attr13)
+thirdyear_default = rename(thirdyear_default, gross_profit_interest___totalassets  = Attr14)
+thirdyear_default = rename(thirdyear_default, totalliabilities365___gross_profit_depreciation = Attr15)
+thirdyear_default = rename(thirdyear_default, gross_profit_depreciation___totalliabilities = Attr16)
+thirdyear_default = rename(thirdyear_default, total_assets___total_liabilities = Attr17)
+thirdyear_default = rename(thirdyear_default, gross_profit___total_assets = Attr18)
+thirdyear_default = rename(thirdyear_default, gross_profit___sales = Attr19)
+thirdyear_default = rename(thirdyear_default, yearlyinventory___sales = Attr20)
+thirdyear_default = rename(thirdyear_default, sales_t1___sales_t0   = Attr21)
+thirdyear_default = rename(thirdyear_default, operating_profit___totalassets = Attr22)
+thirdyear_default = rename(thirdyear_default, netprofit___sales = Attr23)
+thirdyear_default = rename(thirdyear_default, grossprofit3years___totalassets = Attr24)
+thirdyear_default = rename(thirdyear_default, equityminus_sharecapital___totalassets = Attr25)
+thirdyear_default = rename(thirdyear_default, netprofit_depreciation___total_liabilities  = Attr26)
+thirdyear_default = rename(thirdyear_default, operatingprofit___financialexpenses  = Attr27)
+thirdyear_default = rename(thirdyear_default, workingcapital___fixedassets  = Attr28)
+thirdyear_default = rename(thirdyear_default, log_totalassets = Attr29)
+thirdyear_default = rename(thirdyear_default, total_liabilitiesminuscash___sales = Attr30)
+
+
+```
+
+
+```{r}
+
+thirdyear_default = rename(thirdyear_default, grossprofit_interest___sales = Attr31)
+thirdyear_default = rename(thirdyear_default, currentliabilities365___costofgoods  = Attr32)
+thirdyear_default = rename(thirdyear_default, operatingexpense___shortterm_liabilities  = Attr33)
+thirdyear_default = rename(thirdyear_default, operatingexpense___total_liabilities  = Attr34)
+thirdyear_default = rename(thirdyear_default, profitonsales___totalassets = Attr35) #####
+thirdyear_default = rename(thirdyear_default, totalsales____totalassets  = Attr36)
+thirdyear_default = rename(thirdyear_default, currentassets_minusinventory___longtermliabilities  = Attr37)
+thirdyear_default = thirdyear_default = rename(thirdyear_default, constantcapital___totalassets  = Attr38)
+thirdyear_default = rename(thirdyear_default, profitonsales___totalsales  = Attr39)
+thirdyear_default = rename(thirdyear_default, currentassets_minusinventory_receivables____shortterm_liabilities = Attr40)
+thirdyear_default = rename(thirdyear_default, totalliabilities___operatingprofit_depreciation_monthlybasis   = Attr41)
+thirdyear_default = rename(thirdyear_default, operatingprofit____sales  = Attr42)
+thirdyear_default = rename(thirdyear_default, rotationreceivables_inventoryturnover_days  = Attr43)
+thirdyear_default = rename(thirdyear_default, yearlyreceivables___sales  = Attr44)
+thirdyear_default = rename(thirdyear_default, netprofit___inventory = Attr45)
+thirdyear_default = rename(thirdyear_default, currentassetsminusinventory____shortterm_liabilities = Attr46)
+thirdyear_default = rename(thirdyear_default, inventory_yearly___costofgoodssold = Attr47)
+thirdyear_default = rename(thirdyear_default, EBITDA___totalassets = Attr48)
+thirdyear_default = rename(thirdyear_default, EBITDA___sales = Attr49)
+thirdyear_default = rename(thirdyear_default, currentassets_totalliabilities = Attr50)
+thirdyear_default = rename(thirdyear_default, shorttermliabilities___totalassets   = Attr51)
+thirdyear_default = rename(thirdyear_default, shorttermliabilities365___costofgoodssold = Attr52)
+thirdyear_default = rename(thirdyear_default, equity___fixedassets = Attr53)
+thirdyear_default = rename(thirdyear_default, constantcapital___fixedassets = Attr54)
+thirdyear_default = rename(thirdyear_default, workingcapital = Attr55)
+thirdyear_default = rename(thirdyear_default, grossprofit___sales  = Attr56)
+thirdyear_default = rename(thirdyear_default,acidtest___salesminusgrossprofit_depreciation  = Attr57)
+thirdyear_default = rename(thirdyear_default, totalcosts___totalsales  = Attr58)
+thirdyear_default = rename(thirdyear_default, longtermliabilities___equity = Attr59)
+thirdyear_default = rename(thirdyear_default, sales___inventory = Attr60)
+thirdyear_default = rename(thirdyear_default, sales___receivables = Attr61)
+thirdyear_default = rename(thirdyear_default, shorttermliabilities365___sales = Attr62)
+thirdyear_default = rename(thirdyear_default, sales___shorttermliabilities = Attr63)
+thirdyear_default = rename(thirdyear_default, sales___fixedassets = Attr64)
+
+
+```
+
+
+```{r}
+max(thirdyear_default$equity___total_assets)
+min(thirdyear_default$equity___total_assets)
+```
+
+
+```{r}
+p <- ggplot(thirdyear_default, aes(x=netprofit___sales)) + geom_density() +  scale_x_continuous(limits = c(-5,5))
+p
+summary(thirdyear_default$netprofit___sales)
+```
+
+
+```{r}
+p <- ggplot(thirdyear_default, aes(x=gross_profit___sales)) + geom_density() +  scale_x_continuous(limits = c(-5,5))
+p
+summary(thirdyear_default$gross_profit___total_assets)
+```
+
+
+```{r}
+lower= min(thirdyear_default$sales___total_assets)
+upper= max(thirdyear_default$sales___total_assets)
+p <- ggplot(thirdyear_default, aes(x=sales___total_assets)) + geom_density() 
+p
+summary(thirdyear_default$sales___total_assets, na.rm= true)
+
+```
+
+```{r}
+sum(thirdyear_default$sales___total_assets>100, na.rm=TRUE)
+```
+
+
+```{r}
+lower= min(thirdyear_default$working_capital___total_assets)
+upper= max(thirdyear_default$working_capital___total_assets)
+p <- ggplot(thirdyear_default, aes(x=working_capital___total_assets)) + geom_density() +  scale_x_continuous(limits = c(-5,5))
+p
+
+```
+
+
+```{r}
+
+lower= min(thirdyear_default$working_capital___total_assets)
+upper= max(thirdyear_default$working_capital___total_assets)
+p <- ggplot(thirdyear_default, aes(x=working_capital___total_assets)) + geom_density() +  scale_x_continuous(limits = c(-5,5))
+p
+
+```
+
+```{r}
+ggplot(thirdyear_default, aes(x=working_capital___total_assets)) + 
+  geom_histogram(binwidth=0.25) + xlim(-5,5)
+
+min(thirdyear_default$working_capital___total_assets)
+```
+
+
+
+```{r fig.height=20, fig.width=20}
+#install.packages("ggcorrplot")
+library(ggcorrplot)
+corr <- round(cor(thirdyear_default, use = "complete.obs"), 1)
+ggcorrplot(corr)
+
+cor(thirdyear_default$Attr52,thirdyear_default$Attr53)
+```
+
+```{r}
+
+p <- ggplot(thirdyear_default, aes(x=EBIT___totalassets)) + geom_density() 
+p
+summary(thirdyear_default$EBIT___totalassets, na.rm=TRUE)
+sum(thirdyear_default$EBIT___totalassets>1.5, na.rm= TRUE)
+```
+
+```{r}
+p <- ggplot(thirdyear_default, aes(x=EBIT___totalassets)) + geom_density() + scale_x_continuous(limits = c(-0.5,0.5))
+p
+```
+
+
+
+```{r}
+p <- ggplot(thirdyear_default, aes(x=retained_earnings___totalassets)) + geom_density() 
+p
+summary(thirdyear_default$retained_earnings___totalassets, na.rm=TRUE)
+sum(thirdyear_default$retained_earnings___totalassets>0.5, na.rm= TRUE)
+
+```
+
+```{r}
+p <- ggplot(thirdyear_default, aes(x=retained_earnings___totalassets)) + geom_density() + scale_x_continuous(limits = c(-0.1,0.1))
+p
+```
+
+
+
+```{r}
+
+summary(thirdyear_default$gross_profit___short_term_liabilities)
+```
+
+
+```{r}
+d= density(thirdyear_default$gross_profit___short_term_liabilities, na.rm=TRUE)
+plot(d, main = "Gross_Profit / Short-Term Liabilities")
+
+summary(thirdyear_default$gross_profit___short_term_liabilities)
+```
+
+
+```{r}
+d= density(thirdyear_default$sales___total_assets, na.rm=TRUE)
+plot(d, main = "Total Sales / Total Assets")
+
+summary(thirdyear_default$sales___total_assets)
+sum(thirdyear_default$sales___total_assets>5, na.rm= TRUE)
+
+```
+
+```{r}
+p <- ggplot(thirdyear_default, aes(x=total_assets___total_liabilities)) + geom_density()
+p
+summary(thirdyear_default$total_assets___total_liabilities, na.rm=TRUE)
+sum(thirdyear_default$total_assets___total_liabilities>5, na.rm= TRUE)
+
+```
+
+
+
+```{r}
+
+p <- ggplot(thirdyear_default, aes(x=total_assets___total_liabilities)) + geom_density() + scale_x_continuous(limits = c(0,30))
+p
+
+```
+
+```{r}
+p <- ggplot(thirdyear_default, aes(x=shorttermliabilities365___sales)) + geom_density()
+p
+summary(thirdyear_default$shorttermliabilities365___sales, na.rm=TRUE)
+#sum(thirdyear_default$shorttermliabilities365___sales>5, na.rm= TRUE)
+```
+
+
+```{r}
+p <- ggplot(thirdyear_default, aes(x=netprofit___sales)) + geom_density()
+p
+summary(thirdyear_default$netprofit___sales, na.rm=TRUE)
+
+```
+
+```{r}
+p <- ggplot(thirdyear_default, aes(x=sales___shorttermliabilities)) + geom_density()
+p
+summary(thirdyear_default$sales___shorttermliabilities, na.rm=TRUE)
+```
+
+
+
+```{r}
+p <- ggplot(thirdyear_default, aes(x=workingcapital)) + geom_density()
+p
+summary(thirdyear_default$workingcapital, na.rm=TRUE)
+```
+
+```{r}
+p <- ggplot(thirdyear_default, aes(x=EBITDA___sales)) + geom_density()
+p
+summary(thirdyear_default$EBITDA___sales, na.rm=TRUE)
+
+
+```
+
+```{r}
+p <- ggplot(thirdyear_default, aes(x=longtermliabilities___equity)) + geom_density()
+p
+summary(thirdyear_default$longtermliabilities___equity, na.rm=TRUE)
+```
+
+
+```{r}
+
+```
+
+```
+
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+

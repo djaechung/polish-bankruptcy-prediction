@@ -1,0 +1,161 @@
+---
+title: "Random Forest and XGBoost"
+output: html_document
+date: "2022-11-09"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+### Load data
+
+```{r}
+library(caret)
+library(tidyverse)
+library(ggplot2)
+thirdyear_default <- read.csv("csv_result-3year.csv")
+thirdyear_default <- thirdyear_default[ -1 ]
+
+thirdyear_default$class <- as.factor(thirdyear_default$class)
+
+### Due to syntax reasons, the division sign is indicated by ___ (3 dashes)
+thirdyear_default = rename(thirdyear_default, profit___total_assets = Attr1)
+thirdyear_default = rename(thirdyear_default, total_liabilities___total_assets  = Attr2)
+thirdyear_default = rename(thirdyear_default, working_capital___total_assets  = Attr3)
+thirdyear_default = rename(thirdyear_default, current_assets___shortterm_liabilities  = Attr4)
+thirdyear_default = rename(thirdyear_default, liquidity = Attr5) #####
+thirdyear_default = rename(thirdyear_default, retained_earnings___totalassets  = Attr6)
+thirdyear_default = rename(thirdyear_default, EBIT___totalassets  = Attr7)
+thirdyear_default = thirdyear_default = rename(thirdyear_default, bookvalueofequity___total_liabilities  = Attr8)
+thirdyear_default = rename(thirdyear_default, sales___total_assets  = Attr9)
+thirdyear_default = rename(thirdyear_default, equity___total_assets = Attr10)
+thirdyear_default = rename(thirdyear_default, gp_extraordinaryitems_financialexpenses___totalassets   = Attr11)
+thirdyear_default = rename(thirdyear_default, gross_profit___short_term_liabilities  = Attr12)
+thirdyear_default = rename(thirdyear_default, gross_profit_depreciation___sales  = Attr13)
+thirdyear_default = rename(thirdyear_default, gross_profit_interest___totalassets  = Attr14)
+thirdyear_default = rename(thirdyear_default, totalliabilities365___gross_profit_depreciation = Attr15)
+thirdyear_default = rename(thirdyear_default, gross_profit_depreciation___totalliabilities = Attr16)
+thirdyear_default = rename(thirdyear_default, total_assets___total_liabilities = Attr17)
+thirdyear_default = rename(thirdyear_default, gross_profit___total_assets = Attr18)
+thirdyear_default = rename(thirdyear_default, gross_profit___sales = Attr19)
+thirdyear_default = rename(thirdyear_default, yearlyinventory___sales = Attr20)
+thirdyear_default = rename(thirdyear_default, sales_t1___sales_t0   = Attr21)
+thirdyear_default = rename(thirdyear_default, operating_profit___totalassets = Attr22)
+thirdyear_default = rename(thirdyear_default, netprofit___sales = Attr23)
+thirdyear_default = rename(thirdyear_default, grossprofit3years___totalassets = Attr24)
+thirdyear_default = rename(thirdyear_default, equityminus_sharecapital___totalassets = Attr25)
+thirdyear_default = rename(thirdyear_default, netprofit_depreciation___total_liabilities  = Attr26)
+thirdyear_default = rename(thirdyear_default, operatingprofit___financialexpenses  = Attr27)
+thirdyear_default = rename(thirdyear_default, workingcapital___fixedassets  = Attr28)
+thirdyear_default = rename(thirdyear_default, log_totalassets = Attr29)
+thirdyear_default = rename(thirdyear_default, total_liabilitiesminuscash___sales = Attr30)
+thirdyear_default = rename(thirdyear_default, grossprofit_interest___sales = Attr31)
+thirdyear_default = rename(thirdyear_default, currentliabilities365___costofgoods  = Attr32)
+thirdyear_default = rename(thirdyear_default, operatingexpense___shortterm_liabilities  = Attr33)
+thirdyear_default = rename(thirdyear_default, operatingexpense___total_liabilities  = Attr34)
+thirdyear_default = rename(thirdyear_default, profitonsales___totalassets = Attr35) #####
+thirdyear_default = rename(thirdyear_default, totalsales____totalassets  = Attr36)
+thirdyear_default = rename(thirdyear_default, currentassets_minusinventory___longtermliabilities  = Attr37)
+thirdyear_default = thirdyear_default = rename(thirdyear_default, constantcapital___totalassets  = Attr38)
+thirdyear_default = rename(thirdyear_default, profitonsales___totalsales  = Attr39)
+thirdyear_default = rename(thirdyear_default, currentassets_minusinventory_receivables____shortterm_liabilities = Attr40)
+thirdyear_default = rename(thirdyear_default, totalliabilities___operatingprofit_depreciation_monthlybasis   = Attr41)
+thirdyear_default = rename(thirdyear_default, operatingprofit____sales  = Attr42)
+thirdyear_default = rename(thirdyear_default, rotationreceivables_inventoryturnover_days  = Attr43)
+thirdyear_default = rename(thirdyear_default, yearlyreceivables___sales  = Attr44)
+thirdyear_default = rename(thirdyear_default, netprofit___inventory = Attr45)
+thirdyear_default = rename(thirdyear_default, currentassetsminusinventory____shortterm_liabilities = Attr46)
+thirdyear_default = rename(thirdyear_default, inventory_yearly___costofgoodssold = Attr47)
+thirdyear_default = rename(thirdyear_default, EBITDA___totalassets = Attr48)
+thirdyear_default = rename(thirdyear_default, EBITDA___sales = Attr49)
+thirdyear_default = rename(thirdyear_default, currentassets_totalliabilities = Attr50)
+thirdyear_default = rename(thirdyear_default, shorttermliabilities___totalassets   = Attr51)
+thirdyear_default = rename(thirdyear_default, shorttermliabilities365___costofgoodssold = Attr52)
+thirdyear_default = rename(thirdyear_default, equity___fixedassets = Attr53)
+thirdyear_default = rename(thirdyear_default, constantcapital___fixedassets = Attr54)
+thirdyear_default = rename(thirdyear_default, workingcapital = Attr55)
+thirdyear_default = rename(thirdyear_default, grossprofit___sales  = Attr56)
+thirdyear_default = rename(thirdyear_default,acidtest___salesminusgrossprofit_depreciation  = Attr57)
+thirdyear_default = rename(thirdyear_default, totalcosts___totalsales  = Attr58)
+thirdyear_default = rename(thirdyear_default, longtermliabilities___equity = Attr59)
+thirdyear_default = rename(thirdyear_default, sales___inventory = Attr60)
+thirdyear_default = rename(thirdyear_default, sales___receivables = Attr61)
+thirdyear_default = rename(thirdyear_default, shorttermliabilities365___sales = Attr62)
+thirdyear_default = rename(thirdyear_default, sales___shorttermliabilities = Attr63)
+thirdyear_default = rename(thirdyear_default, sales___fixedassets = Attr64)
+
+```
+
+
+### Training/test set
+```{r}
+split = createDataPartition(thirdyear_default$class, p=0.75, list = FALSE)
+train = thirdyear_default[split,]
+test = thirdyear_default[-split,]
+```
+
+
+### Random Forest
+
+```{r}
+set.seed(15071)
+library(randomForest)
+rf <- randomForest(class~., data = train, method = "class", classwt =c(1,700000))
+varImp(rf, conditional=TRUE)
+
+```
+
+```{r}
+pred <- predict(rf, newdata=train, type="class")
+confusionMatrix(data=as.factor(pred), reference = train$class, positive="1")
+
+```
+
+
+```{r}
+pred <- predict(rf, newdata=test, type="class")
+confusionMatrix(data=as.factor(pred), reference = test$class, positive="1")
+
+```
+
+
+```{r}
+library(ROCR)
+pred <- predict(rf, newdata=test, type="prob")[,2] 
+rocr.pred = prediction(pred, test$class)
+#plot(performance(rocr.pred2, "tpr", "fpr"))
+AUC = as.numeric(performance(rocr.pred, "auc")@y.values)
+print(AUC)
+```
+
+
+
+### XGBoost
+```{r}
+library(xgboost)
+set.seed(15071)
+
+dtrain = xgb.DMatrix(data=as.matrix(subset(train, select=-c(class))), label=as.matrix(train$class))
+xgb = xgboost(data = dtrain, max.depth = 20, eta = 1, nthread = 2, nrounds = 50, objective = "binary:logistic", verbose = 0)
+
+
+
+#xgb <- xgboost(data = model.matrix(~ .-1 -ClosePrice, subset(train.df, select=-c(competitive.factor, Competitive.))), label = train.df$Competitive., max.depth = 20, eta = 1, nthread = 2, nrounds = 50, objective = "binary:logistic", verbose = 0)
+#xgb.importance(colnames(model.matrix(~ .-1 -ClosePrice, subset(train.df, select=-c(competitive.factor, Competitive.)))), model = xgb)
+```
+
+
+```{r}
+pred <- predict(rf, newdata=train, type="class")
+confusionMatrix(data=as.factor(pred), reference = train$class, positive="1")
+```
+
+
+
+
+
+
+
+
