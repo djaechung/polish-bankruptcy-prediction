@@ -1,4 +1,4 @@
-Implementations for several bankrupcty classification models developed my our student team
+Implementations for several bankrupcty classification models developed by our student team
 
 Models Included:
 * `Logistic Regression`
