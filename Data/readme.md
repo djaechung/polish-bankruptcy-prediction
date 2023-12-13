@@ -2,6 +2,7 @@ Finnancial data for Polish companies, used to train and test our team's bankrupt
 
 Terminology:
 * `csv_result` - original Polish company data
+* `<n>year` - number of years into the future bankruptcy is recorded for
 * `test` - data split reserved for model testing
 * `train` - data split reserved for model training
 * `imputed` - missing values are imputed in the data
